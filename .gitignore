@@ -1,0 +1,27 @@
+node_modules
+./package-lock.json
+
+# dependencies
+/node_modules
+./app/node_modules
+./app/.pnp
+./app/.pnp.js
+./package-lock.json
+./app/package-lock.json
+
+# testing
+./app/coverage
+
+# production
+./app/build
+
+# misc
+./app/.DS_Store
+./app/.env.local
+./app/.env.development.local
+./app/.env.test.local
+./app/.env.production.local
+
+./app/npm-debug.log*
+./app/yarn-debug.log*
+./app/yarn-error.log*
