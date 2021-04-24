@@ -82,7 +82,7 @@ export default function Options({ children }) {
                   Copy Your ID
                 </Button>
               </CopyToClipboard>
-              <Typography gutterBottom variant="h7">
+              <Typography gutterBottom variant="h6">
                 ID: {me}
               </Typography>
             </Grid>
