@@ -82,6 +82,9 @@ export default function Options({ children }) {
                   Copy Your ID
                 </Button>
               </CopyToClipboard>
+              <Typography gutterBottom variant="h7">
+                ID: {me}
+              </Typography>
             </Grid>
             <Grid item xs={12} md={6} className={classes.padding}>
               <Typography gutterBottom variant="h6">
