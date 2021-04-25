@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { Button } from "@material-ui/core";
+import ring_ring from "../assets/ring_ring.mp3";
 
 import { SocketContext } from "../SocketContext";
 
@@ -13,6 +14,7 @@ export default function Notifications() {
           <Button variant="contained" color="primary" onClick={answerCall}>
             Answer
           </Button>
+          <audio id="caller-tune" src={ring_ring} autoPlay loop></audio>
         </div>
       )}
     </>
