@@ -31,12 +31,17 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("Call ended");
   });
 
-  socket.on("calluser", ({ userToCall, signalData, from, name }) => {
-    io.to(userToCall).emit("calluser", { signal: signalData, from, name });
+  socket.on("calluser", ({ recepient, signalData, from, name }) => {
+    io.to(recepient).emit("calluser", { signal: signalData, from, name });
   });
 
   socket.on("answercall", (data) => {
     io.to(data.to).emit("callaccepted", data.signal);
+  });
+
+  socket.on("endCall", ({ recepient }) => {
+    console.log("End Call", recepient);
+    io.to(recepient).emit("endCall");
   });
 });
 

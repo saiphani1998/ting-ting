@@ -4,13 +4,14 @@ import Peer from "simple-peer";
 
 const SocketContext = createContext();
 
-// const socket = io("http://localhost:5000");
-const socket = io("https://ting-ting.herokuapp.com/");
+const socket = io("http://localhost:5000");
+// const socket = io("https://ting-ting.herokuapp.com/");
 
 const ContextProvider = ({ children }) => {
   const [stream, setStream] = useState(null);
   const [me, setMe] = useState("");
   const [call, setCall] = useState({});
+  const [callOutgoing, setCallOutgoing] = useState(false);
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
   const [name, setName] = useState("");
@@ -29,8 +30,8 @@ const ContextProvider = ({ children }) => {
         setStream(currentStream);
         myVideo.current.srcObject = currentStream;
       })
-      .catch((error) => {
-        console.log("vvgv");
+      .catch(() => {
+        console.log("Unable to access Camera and Mic");
       });
 
     socket.on("me", (id) => {
@@ -44,6 +45,13 @@ const ContextProvider = ({ children }) => {
         from,
         name: callerName,
         signal,
+      });
+    });
+
+    socket.on("endCall", () => {
+      console.log("Ending call");
+      setCall({
+        isReceivingCall: false,
       });
     });
   }, []);
@@ -78,8 +86,9 @@ const ContextProvider = ({ children }) => {
     });
 
     peer.on("signal", (data) => {
+      setCallOutgoing(true);
       socket.emit("calluser", {
-        userToCall: id,
+        recepient: id,
         signalData: data,
         from: me,
         name,
@@ -99,12 +108,16 @@ const ContextProvider = ({ children }) => {
     connectionRef.current = peer;
   };
 
-  const leaveCall = () => {
+  const leaveCall = (id) => {
+    console.log("Leaving call");
     setCallEnded(true);
+    setCallOutgoing(false);
+    setCallAccepted(false);
 
+    socket.emit("endCall", {
+      recepient: id,
+    });
     connectionRef.current.destroy();
-
-    window.location.reload();
   };
 
   return (
@@ -112,6 +125,7 @@ const ContextProvider = ({ children }) => {
       value={{
         call,
         callAccepted,
+        callOutgoing,
         myVideo,
         userVideo,
         stream,

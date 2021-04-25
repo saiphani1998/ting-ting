@@ -53,6 +53,7 @@ export default function Options({ children }) {
     callEnded,
     leaveCall,
     callUser,
+    callOutgoing,
   } = useContext(SocketContext);
   const [idToCall, setIdToCall] = useState("");
   const classes = useStyles();
@@ -96,13 +97,13 @@ export default function Options({ children }) {
                 onChange={(e) => setIdToCall(e.target.value)}
                 fullWidth
               />
-              {callAccepted && !callEnded ? (
+              {(callAccepted && !callEnded) || callOutgoing ? (
                 <Button
                   variant="contained"
                   color="secondary"
                   startIcon={<PhoneDisabled fontSize="large" />}
                   fullWidth
-                  onClick={leaveCall}
+                  onClick={() => leaveCall(idToCall)}
                   className={classes.margin}
                 >
                   Hang Up
