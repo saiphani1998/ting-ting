@@ -53,6 +53,8 @@ const ContextProvider = ({ children }) => {
       setCall({
         isReceivingCall: false,
       });
+      setCallEnded(true);
+      window.location.reload();
     });
   }, []);
 
@@ -101,6 +103,7 @@ const ContextProvider = ({ children }) => {
 
     socket.on("callaccepted", (signal) => {
       setCallAccepted(true);
+      setCallOutgoing(false);
 
       peer.signal(signal);
     });
@@ -109,15 +112,17 @@ const ContextProvider = ({ children }) => {
   };
 
   const leaveCall = (id) => {
-    console.log("Leaving call");
     setCallEnded(true);
     setCallOutgoing(false);
-    setCallAccepted(false);
+    if (!id) {
+      setCallAccepted(false);
+    }
 
     socket.emit("endCall", {
-      recepient: id,
+      recepient: id ? id : call.from,
     });
     connectionRef.current.destroy();
+    window.location.reload();
   };
 
   return (
