@@ -16,13 +16,11 @@ export default function Notifications() {
 
   const ringtoneVolumeSetter = () => {
     const element = document.getElementById("ringTone");
-    console.log(element);
     setVolume.apply(this, [element, 0.05]);
   };
 
   const dialToneVolumeSetter = () => {
     const element = document.getElementById("dialTone");
-    console.log(element);
     setVolume.apply(this, [element, 0.2]);
   };
 
