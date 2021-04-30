@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: "10px 20px",
     border: "2px solid black",
+    backgroundColor: "#e8e8e8",
   },
 }));
 
@@ -58,6 +59,11 @@ export default function Options({ children }) {
   const [idToCall, setIdToCall] = useState("");
   const classes = useStyles();
 
+  const handleNameChange = (value) => {
+    localStorage.setItem("name", value);
+    setName(value);
+  };
+
   return (
     <Container className={classes.container}>
       <Paper elevation={10} className={classes.paper}>
@@ -69,8 +75,8 @@ export default function Options({ children }) {
               </Typography>
               <TextField
                 label="Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={localStorage.getItem("name") || name}
+                onChange={(e) => handleNameChange(e.target.value)}
                 fullWidth
               />
               <CopyToClipboard text={me} className={classes.margin}>
@@ -83,7 +89,7 @@ export default function Options({ children }) {
                   Copy Your ID
                 </Button>
               </CopyToClipboard>
-              <Typography gutterBottom variant="h6">
+              <Typography gutterBottom variant="overline">
                 ID: {me}
               </Typography>
             </Grid>
