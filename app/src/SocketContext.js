@@ -11,29 +11,41 @@ const ContextProvider = ({ children }) => {
   const [stream, setStream] = useState(null);
   const [me, setMe] = useState("");
   const [call, setCall] = useState({});
+  const [accessCamera, setAccessCamera] = useState(false);
+  const [cameraAccessed, setCameraAccessed] = useState(false);
   const [callOutgoing, setCallOutgoing] = useState(false);
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
-  const [name, setName] = useState("");
+  const [name, setName] = useState(localStorage.getItem("name") || "");
 
   const myVideo = useRef(null);
   const userVideo = useRef(null);
   const connectionRef = useRef(null);
 
+  function getCameraAccess() {
+    return navigator.mediaDevices.getUserMedia({
+      video: {
+        width: { min: 1024, ideal: 720, max: 1840 },
+        height: { min: 576, ideal: 1280, max: 4000 },
+      },
+      audio: true,
+    });
+  }
+
   useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({
-        video: true,
-        audio: true,
-      })
+    getCameraAccess()
       .then((currentStream) => {
+        setCameraAccessed(true);
         setStream(currentStream);
         myVideo.current.srcObject = currentStream;
       })
       .catch(() => {
+        setCameraAccessed(false);
         console.log("Unable to access Camera and Mic");
       });
+  }, [accessCamera]);
 
+  useEffect(() => {
     socket.on("me", (id) => {
       setMe(id);
     });
