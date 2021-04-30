@@ -4,8 +4,8 @@ import Peer from "simple-peer";
 
 const SocketContext = createContext();
 
-// const socket = io("http://localhost:5000");
-const socket = io("https://ting-ting.herokuapp.com/");
+const socket = io("http://localhost:5000");
+// const socket = io("https://ting-ting.herokuapp.com/");
 
 const ContextProvider = ({ children }) => {
   const [stream, setStream] = useState(null);
@@ -93,6 +93,18 @@ const ContextProvider = ({ children }) => {
   };
 
   const callUser = (id) => {
+    if (!cameraAccessed) {
+      alert("Provide camera access to call other user");
+      console.log("Provide camera access to call other user");
+      setAccessCamera(!accessCamera);
+      return;
+    }
+
+    if (!name || name == "") {
+      alert("Please set your name to make call!");
+      return;
+    }
+
     const peer = new Peer({
       initiator: true,
       trickle: false,
