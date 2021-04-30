@@ -8,7 +8,9 @@ const useStyles = makeStyles((theme) => ({
   video: {
     width: "550px",
     [theme.breakpoints.down("xs")]: {
-      width: "300px",
+      height: "100vh",
+      overflow: "hidden",
+      maxWidth: "100%",
     },
   },
   gridContainer: {
