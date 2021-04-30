@@ -100,7 +100,7 @@ const ContextProvider = ({ children }) => {
       return;
     }
 
-    if (!name || name == "") {
+    if (!name || name === "") {
       alert("Please set your name to make call!");
       return;
     }
