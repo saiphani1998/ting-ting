@@ -25,8 +25,8 @@ const ContextProvider = ({ children }) => {
   function getCameraAccess() {
     return navigator.mediaDevices.getUserMedia({
       video: {
-        width: { min: 1024, ideal: 720, max: 1840 },
-        height: { min: 576, ideal: 1280, max: 4000 },
+        width: { max: 1840 },
+        height: { max: 4000 },
       },
       audio: true,
     });

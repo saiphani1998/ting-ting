@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme) => ({
   video: {
     width: "550px",
     [theme.breakpoints.down("xs")]: {
-      height: "100vh",
+      height: "90vh",
       overflow: "hidden",
       maxWidth: "100%",
     },
