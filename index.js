@@ -28,7 +28,7 @@ app.get("/*", (req, res) => {
 io.on("connection", (socket) => {
   socket.emit("me", socket.id);
   socket.on("disconnect", () => {
-    socket.broadcast.emit("Call ended");
+    // socket.broadcast.emit("endCall");
   });
 
   socket.on("calluser", ({ recepient, signalData, from, name }) => {
@@ -42,6 +42,10 @@ io.on("connection", (socket) => {
   socket.on("endCall", ({ recepient }) => {
     console.log("End Call", recepient);
     io.to(recepient).emit("endCall");
+  });
+
+  socket.on("toggleAudio", ({ recepient, from }) => {
+    io.to(recepient).emit("toggleAudio");
   });
 });
 
