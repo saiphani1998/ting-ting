@@ -11,14 +11,6 @@ import Notifications from "./components/Notifications";
 import Options from "./components/Options";
 
 const theme = createMuiTheme({
-  // palette: {
-  //   primary: {
-  //     main: "#51c9f5",
-  //   },
-  //   secondary: {
-  //     main: "#FF3B30",
-  //   },
-  // },
   palette: {
     primary: {
       light: "#67daff",
