@@ -3,14 +3,19 @@ import { Grid, Typography, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { SocketContext } from "../SocketContext";
+import VideoOptions from "./VideoOptions";
 
 const useStyles = makeStyles((theme) => ({
   video: {
     width: "550px",
+    [theme.breakpoints.up("md")]: {
+      minHeight: "480px",
+      height: "fit-content",
+    },
     [theme.breakpoints.down("xs")]: {
-      height: "90vh",
-      overflow: "hidden",
-      maxWidth: "100%",
+      width: "100%",
+      display: "grid",
+      justifyContent: "center",
     },
   },
   gridContainer: {
@@ -21,9 +26,15 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: "10px",
-    border: "2px solid black",
     margin: "10px",
-    backgroundColor: "#e8e8e8",
+    backgroundColor: "var(--theme-primary-background)",
+    textAlign: "center",
+  },
+  videoGrid: {
+    [theme.breakpoints.down("xs")]: {
+      display: "grid",
+      justifyContent: "center",
+    },
   },
 }));
 
@@ -43,10 +54,7 @@ export default function VideoPlayer() {
     <Grid container className={classes.gridContainer}>
       {stream && (
         <Paper className={classes.paper}>
-          <Grid item xs={12} md={6}>
-            <Typography variant="h5" gutterBottom>
-              {name || "Name"}
-            </Typography>
+          <Grid item xs={12} md={6} className={classes.videoGrid}>
             <video
               playsInline
               muted
@@ -55,21 +63,23 @@ export default function VideoPlayer() {
               className={classes.video}
             />
           </Grid>
+          <VideoOptions></VideoOptions>
         </Paper>
       )}
       {callAccepted && !callEnded && (
         <Paper className={classes.paper}>
-          <Grid item xs={12} md={6}>
-            <Typography variant="h5" gutterBottom>
-              {call.name || "Name"}
-            </Typography>
+          <Grid item xs={12} md={6} className={classes.videoGrid}>
             <video
               playsInline
               ref={userVideo}
               autoPlay
               className={classes.video}
+              id="userVideo"
             />
           </Grid>
+          <Typography variant="overline" gutterBottom>
+            <b>{call.name || "Other User"}</b>
+          </Typography>
         </Paper>
       )}
     </Grid>
