@@ -1,26 +1,46 @@
 import React from "react";
-import { Typography, AppBar } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Typography, AppBar, Toolbar } from "@material-ui/core";
+import {
+  createMuiTheme,
+  makeStyles,
+  ThemeProvider,
+} from "@material-ui/core/styles";
 
 import VideoPlayer from "./components/VideoPlayer";
 import Notifications from "./components/Notifications";
 import Options from "./components/Options";
 
-const useStyles = makeStyles((theme) => ({
+const theme = createMuiTheme({
+  // palette: {
+  //   primary: {
+  //     main: "#51c9f5",
+  //   },
+  //   secondary: {
+  //     main: "#FF3B30",
+  //   },
+  // },
+  palette: {
+    primary: {
+      light: "#67daff",
+      main: "#03a9f4",
+      dark: "#007ac1",
+      contrastText: "#fff",
+    },
+    secondary: {
+      light: "#ffa270",
+      main: "#ff7043",
+      dark: "#c63f17",
+      contrastText: "#fff",
+    },
+  },
+});
+
+const useStyles = makeStyles(() => ({
   appBar: {
-    borderRadius: 15,
-    margin: "30px 100px",
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    width: "600px",
-    border: "2px solid black",
-    backgroundColor: "#e8e8e8",
-
-    [theme.breakpoints.down("xs")]: {
-      width: "90%",
-    },
   },
   image: {
     marginLeft: "15px",
@@ -36,16 +56,23 @@ const useStyles = makeStyles((theme) => ({
 export default function App() {
   const classes = useStyles();
   return (
-    <div className={classes.wrapper}>
-      <AppBar className={classes.appBar} position="static" color="inherit">
-        <Typography variant="h4" align="center">
-          Ting Ting - The video calling App
-        </Typography>
-      </AppBar>
-      <VideoPlayer />
-      <Options>
-        <Notifications />
-      </Options>
-    </div>
+    <ThemeProvider theme={theme}>
+      <div className={classes.wrapper}>
+        <AppBar position="static" className={classes.appBar}>
+          <Toolbar>
+            <Typography variant="h5">
+              Ting Ting
+              <Typography variant="caption">
+                &nbsp; -- The Video Calling App
+              </Typography>
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <VideoPlayer />
+        <Options>
+          <Notifications />
+        </Options>
+      </div>
+    </ThemeProvider>
   );
 }
