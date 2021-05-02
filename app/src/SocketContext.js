@@ -34,11 +34,9 @@ const ContextProvider = ({ children }) => {
     };
     if (accessConstraints.video) {
       if (accessConstraints.frontCamera) {
-        constraints.video.facingMode = "user";
-        setIsFrontCamera(true);
+        constraints.video = true;
       } else {
-        constraints.video.facingMode = "environment";
-        setIsFrontCamera(false);
+        constraints.video.facingMode = "user";
       }
     } else {
       constraints.video = false;
