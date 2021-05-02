@@ -32,16 +32,19 @@ const useStyles = makeStyles((theme) => ({
       width: "80%",
     },
   },
-  margin: {
+  button: {
     marginTop: 20,
+    color: "var(--theme-primary-text)",
+    fontFamily: `"Roboto", "Helvetica", "Arial", sans-serif`,
   },
   padding: {
     padding: 20,
   },
   paper: {
     padding: "10px 20px",
-    border: "2px solid black",
-    backgroundColor: "#e8e8e8",
+    borderRadius: "10px",
+    backgroundColor: "var(--theme-primary-background)",
+    color: "var(--theme-primary-text)",
   },
 }));
 
@@ -70,7 +73,7 @@ export default function Options({ children }) {
         <form className={classes.root} noValidate autoComplete="off">
           <Grid container className={classes.gridContainer}>
             <Grid item xs={12} md={6} className={classes.padding}>
-              <Typography gutterBottom variant="h6">
+              <Typography gutterBottom variant="overline">
                 Account Info
               </Typography>
               <TextField
@@ -79,7 +82,7 @@ export default function Options({ children }) {
                 onChange={(e) => handleNameChange(e.target.value)}
                 fullWidth
               />
-              <CopyToClipboard text={me} className={classes.margin}>
+              <CopyToClipboard text={me} className={classes.button}>
                 <Button
                   variant="contained"
                   color="primary"
@@ -94,7 +97,7 @@ export default function Options({ children }) {
               </Typography>
             </Grid>
             <Grid item xs={12} md={6} className={classes.padding}>
-              <Typography gutterBottom variant="h6">
+              <Typography gutterBottom variant="overline">
                 Make a call
               </Typography>
               <TextField
@@ -110,7 +113,7 @@ export default function Options({ children }) {
                   startIcon={<PhoneDisabled fontSize="large" />}
                   fullWidth
                   onClick={() => leaveCall(idToCall)}
-                  className={classes.margin}
+                  className={classes.button}
                 >
                   Hang Up
                 </Button>
@@ -121,7 +124,7 @@ export default function Options({ children }) {
                   startIcon={<Phone fontSize="large" />}
                   fullWidth
                   onClick={() => callUser(idToCall)}
-                  className={classes.margin}
+                  className={classes.button}
                 >
                   Call
                 </Button>
