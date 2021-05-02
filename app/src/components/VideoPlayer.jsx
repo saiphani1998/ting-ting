@@ -40,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function VideoPlayer() {
   const {
-    name,
     callAccepted,
     myVideo,
     userVideo,
