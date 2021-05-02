@@ -1,6 +1,7 @@
 import React, { createContext, useState, useRef, useEffect } from "react";
 import { io } from "socket.io-client";
 import Peer from "simple-peer";
+import CallUtility from "./utilities/CallUtility";
 
 const SocketContext = createContext();
 
@@ -10,9 +11,13 @@ const socket = io("https://ting-ting.herokuapp.com/");
 const ContextProvider = ({ children }) => {
   const [stream, setStream] = useState(null);
   const [me, setMe] = useState("");
+  const [otherUser, setOtherUser] = useState("");
   const [call, setCall] = useState({});
   const [accessCamera, setAccessCamera] = useState(false);
   const [cameraAccessed, setCameraAccessed] = useState(false);
+  const [isFrontCamera, setIsFrontCamera] = useState(true);
+  const [audioEnabled, setAudioEnabled] = useState(true);
+  const [videoEnabled, setVideoEnabled] = useState(true);
   const [callOutgoing, setCallOutgoing] = useState(false);
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
@@ -22,28 +27,63 @@ const ContextProvider = ({ children }) => {
   const userVideo = useRef(null);
   const connectionRef = useRef(null);
 
-  function getCameraAccess() {
-    return navigator.mediaDevices.getUserMedia({
-      video: {
-        width: { max: 1840 },
-        height: { max: 4000 },
-      },
-      audio: true,
-    });
+  function getCameraAccess(accessConstraints) {
+    const constraints = {
+      video: {},
+      audio: {},
+    };
+    if (accessConstraints.video) {
+      if (accessConstraints.frontCamera) {
+        constraints.video.facingMode = "user";
+        setIsFrontCamera(true);
+      } else {
+        constraints.video.facingMode = "environment";
+        setIsFrontCamera(false);
+      }
+    } else {
+      constraints.video = false;
+    }
+
+    constraints.audio = accessConstraints.audio;
+
+    return navigator.mediaDevices.getUserMedia(constraints);
   }
 
   useEffect(() => {
-    getCameraAccess()
+    let cameraAccessConstraints = {
+      frontCamera: isFrontCamera,
+      audio: audioEnabled,
+      video: videoEnabled,
+    };
+    getCameraAccess(cameraAccessConstraints)
       .then((currentStream) => {
         setCameraAccessed(true);
+        setStream(null);
         setStream(currentStream);
         myVideo.current.srcObject = currentStream;
       })
-      .catch(() => {
+      .catch((error) => {
         setCameraAccessed(false);
-        console.log("Unable to access Camera and Mic");
+        console.log("Unable to access Camera and Mic", error);
       });
   }, [accessCamera]);
+
+  const changeCamera = () => {
+    console.log("Changing camera");
+    setIsFrontCamera(!isFrontCamera);
+    setAccessCamera(!accessCamera);
+  };
+
+  const toggleVideo = () => {
+    setVideoEnabled(!videoEnabled);
+    setAccessCamera(!accessCamera);
+  };
+
+  const toggleAudio = () => {
+    console.log("Toggling Audio");
+    setAudioEnabled(!audioEnabled);
+    socket.emit("toggleAudio", { recepient: otherUser, from: me });
+  };
 
   useEffect(() => {
     socket.on("me", (id) => {
@@ -68,6 +108,11 @@ const ContextProvider = ({ children }) => {
       setCallEnded(true);
       window.location.reload();
     });
+
+    socket.on("toggleAudio", () => {
+      let element = document.getElementById("userVideo");
+      element.muted = !element.muted;
+    });
   }, []);
 
   const answerCall = () => {
@@ -80,6 +125,7 @@ const ContextProvider = ({ children }) => {
     });
 
     peer.on("signal", (data) => {
+      setOtherUser(call.from);
       socket.emit("answercall", { signal: data, to: call.from });
     });
 
@@ -93,6 +139,13 @@ const ContextProvider = ({ children }) => {
   };
 
   const callUser = (id) => {
+    const utility = new CallUtility();
+    if (utility.isNullOrEmpty(id)) {
+      alert("Provide Valid User ID to call");
+      console.log("Provide Valid User ID to call");
+      return;
+    }
+
     if (!cameraAccessed) {
       alert("Provide camera access to call other user");
       console.log("Provide camera access to call other user");
@@ -100,8 +153,8 @@ const ContextProvider = ({ children }) => {
       return;
     }
 
-    if (!name || name === "") {
-      alert("Please set your name to make call!");
+    if (utility.isNullOrEmpty(name)) {
+      alert("Please provide your name to make call!");
       return;
     }
 
@@ -128,6 +181,7 @@ const ContextProvider = ({ children }) => {
     socket.on("callaccepted", (signal) => {
       setCallAccepted(true);
       setCallOutgoing(false);
+      setOtherUser(id);
 
       peer.signal(signal);
     });
@@ -165,6 +219,11 @@ const ContextProvider = ({ children }) => {
         callUser,
         leaveCall,
         answerCall,
+        changeCamera,
+        toggleAudio,
+        toggleVideo,
+        audioEnabled,
+        videoEnabled,
       }}
     >
       {children}
