@@ -14,7 +14,7 @@ const ContextProvider = ({ children }) => {
   const [otherUser, setOtherUser] = useState("");
   const [call, setCall] = useState({});
   const [cameraAccessed, setCameraAccessed] = useState(false);
-  const [isFrontCamera, setIsFrontCamera] = useState(true);
+  // const [isFrontCamera, setIsFrontCamera] = useState(true);
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [videoEnabled, setVideoEnabled] = useState(true);
   const [callOutgoing, setCallOutgoing] = useState(false);
@@ -48,7 +48,7 @@ const ContextProvider = ({ children }) => {
 
   useEffect(() => {
     let cameraAccessConstraints = {
-      frontCamera: isFrontCamera,
+      // frontCamera: isFrontCamera,
       audio: audioEnabled,
       video: videoEnabled,
     };
@@ -63,15 +63,16 @@ const ContextProvider = ({ children }) => {
         setCameraAccessed(false);
         console.log("Unable to access Camera and Mic", error);
       });
-  }, [isFrontCamera, audioEnabled, videoEnabled]);
+  }, [audioEnabled, videoEnabled]);
 
-  const changeCamera = () => {
-    console.log("Changing camera");
-    setIsFrontCamera(!isFrontCamera);
-  };
+  // const changeCamera = () => {
+  //   console.log("Changing camera");
+  //   setIsFrontCamera(!isFrontCamera);
+  // };
 
   const toggleVideo = () => {
     setVideoEnabled(!videoEnabled);
+    socket.emit("toggleVideo", { recepient: otherUser, from: me });
   };
 
   const toggleAudio = () => {
@@ -213,7 +214,7 @@ const ContextProvider = ({ children }) => {
         callUser,
         leaveCall,
         answerCall,
-        changeCamera,
+        // changeCamera,
         toggleAudio,
         toggleVideo,
         audioEnabled,

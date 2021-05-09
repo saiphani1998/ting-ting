@@ -44,13 +44,13 @@ export default function VideoOptions() {
         </Typography>
       </Grid>
       <Grid item md={9} xs={9} className={classes.grid}>
-        <IconButton
+        {/* <IconButton
           onClick={() => changeCamera()}
           aria-label="Change Camera"
           color="secondary"
         >
           <FlipCameraIos />
-        </IconButton>
+        </IconButton> */}
         <IconButton
           onClick={() => toggleVideo()}
           aria-label="Toggle Camera"
