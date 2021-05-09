@@ -107,7 +107,9 @@ const ContextProvider = ({ children }) => {
 
     socket.on("toggleAudio", () => {
       let element = document.getElementById("userVideo");
-      element.muted = !element.muted;
+      if (element) {
+        element.muted = !element.muted;
+      }
     });
   }, []);
 
