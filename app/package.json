@@ -16,6 +16,7 @@
     "socket.io-client": "^4.0.1"
   },
   "scripts": {
+    "devStart": "set HTTPS=true&&react-scripts start",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
