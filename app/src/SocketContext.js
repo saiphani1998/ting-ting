@@ -13,7 +13,6 @@ const ContextProvider = ({ children }) => {
   const [me, setMe] = useState("");
   const [otherUser, setOtherUser] = useState("");
   const [call, setCall] = useState({});
-  const [accessCamera, setAccessCamera] = useState(false);
   const [cameraAccessed, setCameraAccessed] = useState(false);
   const [isFrontCamera, setIsFrontCamera] = useState(true);
   const [audioEnabled, setAudioEnabled] = useState(true);
@@ -64,17 +63,15 @@ const ContextProvider = ({ children }) => {
         setCameraAccessed(false);
         console.log("Unable to access Camera and Mic", error);
       });
-  }, [accessCamera]);
+  }, [isFrontCamera, audioEnabled, videoEnabled]);
 
   const changeCamera = () => {
     console.log("Changing camera");
     setIsFrontCamera(!isFrontCamera);
-    setAccessCamera(!accessCamera);
   };
 
   const toggleVideo = () => {
     setVideoEnabled(!videoEnabled);
-    setAccessCamera(!accessCamera);
   };
 
   const toggleAudio = () => {
@@ -147,7 +144,6 @@ const ContextProvider = ({ children }) => {
     if (!cameraAccessed) {
       alert("Provide camera access to call other user");
       console.log("Provide camera access to call other user");
-      setAccessCamera(!accessCamera);
       return;
     }
 
