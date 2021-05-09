@@ -1,11 +1,5 @@
 import { Grid, IconButton, makeStyles, Typography } from "@material-ui/core";
-import {
-  FlipCameraIos,
-  Mic,
-  MicOff,
-  Videocam,
-  VideocamOff,
-} from "@material-ui/icons";
+import { Mic, MicOff } from "@material-ui/icons";
 import React, { useContext } from "react";
 import { SocketContext } from "../SocketContext";
 
@@ -22,14 +16,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function VideoOptions() {
-  const {
-    name,
-    changeCamera,
-    toggleVideo,
-    toggleAudio,
-    audioEnabled,
-    videoEnabled,
-  } = useContext(SocketContext);
+  const { name, toggleAudio, audioEnabled } = useContext(SocketContext);
   const classes = useStyles();
 
   return (
@@ -51,13 +38,13 @@ export default function VideoOptions() {
         >
           <FlipCameraIos />
         </IconButton> */}
-        <IconButton
+        {/* <IconButton
           onClick={() => toggleVideo()}
           aria-label="Toggle Camera"
           color="secondary"
         >
           {videoEnabled ? <VideocamOff /> : <Videocam />}
-        </IconButton>
+        </IconButton> */}
         <IconButton
           onClick={() => toggleAudio()}
           aria-label="Toggle Mic"
