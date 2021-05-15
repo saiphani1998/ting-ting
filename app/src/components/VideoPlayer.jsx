@@ -39,14 +39,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function VideoPlayer() {
-  const {
-    callAccepted,
-    myVideo,
-    userVideo,
-    callEnded,
-    stream,
-    call,
-  } = useContext(SocketContext);
+  const { callAccepted, myVideo, userVideo, callEnded, stream, call } =
+    useContext(SocketContext);
   const classes = useStyles();
 
   return (
@@ -62,7 +56,7 @@ export default function VideoPlayer() {
               className={classes.video}
             />
           </Grid>
-          <VideoOptions></VideoOptions>
+          {callAccepted && !callEnded && <VideoOptions />}
         </Paper>
       )}
       {callAccepted && !callEnded && (
