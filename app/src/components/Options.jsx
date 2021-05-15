@@ -89,6 +89,7 @@ export default function Options({ children }) {
                 value={localStorage.getItem("name") || name}
                 onChange={(e) => handleNameChange(e.target.value)}
                 fullWidth
+                disabled={callAccepted && !callEnded}
               />
               <CopyToClipboard text={me} className={classes.button}>
                 <Button
