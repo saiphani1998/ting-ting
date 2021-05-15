@@ -86,12 +86,12 @@ const ContextProvider = ({ children }) => {
       setMe(id);
     });
 
-    socket.on("calluser", ({ from, name: callerName, signal }) => {
+    socket.on("calluser", ({ from, name, signal }) => {
       console.log("Receiving call");
       setCall({
         isReceivingCall: true,
         from,
-        name: callerName,
+        name,
         signal,
       });
     });
@@ -124,7 +124,7 @@ const ContextProvider = ({ children }) => {
 
     peer.on("signal", (data) => {
       setOtherUser(call.from);
-      socket.emit("answercall", { signal: data, to: call.from });
+      socket.emit("answercall", { signal: data, to: call.from, name });
     });
 
     peer.on("stream", (currentStream) => {
@@ -175,10 +175,11 @@ const ContextProvider = ({ children }) => {
       userVideo.current.srcObject = currentStream;
     });
 
-    socket.on("callaccepted", (signal) => {
+    socket.on("callaccepted", ({ signal, name }) => {
       setCallAccepted(true);
       setCallOutgoing(false);
       setOtherUser(id);
+      setCall({ name });
 
       peer.signal(signal);
     });
