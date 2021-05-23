@@ -42,6 +42,22 @@ const useStyles = makeStyles(() => ({
     flexDirection: "column",
     alignItems: "center",
     width: "100%",
+    minHeight: "100vh",
+  },
+  footer: {
+    backgroundColor: "#333",
+    color: "white",
+    height: "50px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+  },
+  content: {
+    flexGrow: "1",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
 }));
 
@@ -55,15 +71,29 @@ export default function App() {
             <Typography variant="h5">
               Ting Ting
               <Typography variant="caption">
-                &nbsp; -- The Video Calling App
+                {" "}
+                -- The Video Calling App
               </Typography>
             </Typography>
           </Toolbar>
         </AppBar>
-        <VideoPlayer />
-        <Options>
-          <Notifications />
-        </Options>
+        <div className={classes.content}>
+          <VideoPlayer />
+          <Options>
+            <Notifications />
+          </Options>
+        </div>
+        <div className={classes.footer}>
+          <span>
+            Made with ❤️ by{" "}
+            <a
+              style={{ color: "#03a9f4", textDecoration: "none" }}
+              href="https://www.linkedin.com/in/saiphani1998/"
+            >
+              Phani
+            </a>
+          </span>
+        </div>
       </div>
     </ThemeProvider>
   );
