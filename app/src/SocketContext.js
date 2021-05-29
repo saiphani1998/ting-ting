@@ -19,6 +19,7 @@ const ContextProvider = ({ children }) => {
   const [videoEnabled, setVideoEnabled] = useState(true);
   const [callOutgoing, setCallOutgoing] = useState(false);
   const [callAccepted, setCallAccepted] = useState(false);
+  const [callDeclined, setCallDeclined] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
   const [name, setName] = useState(localStorage.getItem("name") || "");
 
@@ -184,6 +185,12 @@ const ContextProvider = ({ children }) => {
       peer.signal(signal);
     });
 
+    socket.on("callDeclined", () => {
+      setCallDeclined(true);
+      setCallEnded(true);
+      setCallOutgoing(false);
+    });
+
     connectionRef.current = peer;
   };
 
@@ -201,11 +208,31 @@ const ContextProvider = ({ children }) => {
     window.location.reload();
   };
 
+  const declineCall = () => {
+    setCallEnded(true);
+    const peer = new Peer({
+      initiator: false,
+      trickle: false,
+      stream,
+    });
+
+    peer.on("signal", (data) => {
+      socket
+        .emit("declineCall", { signal: data, to: call.from, name, me })
+        .on("declineReceived", () => {
+          window.location.reload();
+        });
+    });
+
+    peer.signal(call.signal);
+  };
+
   return (
     <SocketContext.Provider
       value={{
         call,
         callAccepted,
+        callDeclined,
         callOutgoing,
         myVideo,
         userVideo,
@@ -217,6 +244,7 @@ const ContextProvider = ({ children }) => {
         callUser,
         leaveCall,
         answerCall,
+        declineCall,
         // changeCamera,
         toggleAudio,
         toggleVideo,
