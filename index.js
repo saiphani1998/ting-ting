@@ -42,6 +42,15 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("declineCall", (data) => {
+    console.log("Decline Call");
+    io.to(data.to).emit("callDeclined", {
+      signal: data.signal,
+      name: data.name,
+    });
+    io.to(data.me).emit("declineReceived");
+  });
+
   socket.on("endCall", ({ recepient }) => {
     console.log("End Call", recepient);
     io.to(recepient).emit("endCall");
