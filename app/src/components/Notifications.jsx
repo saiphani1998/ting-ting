@@ -1,14 +1,48 @@
-import React, { useContext } from "react";
-import { Button } from "@material-ui/core";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@material-ui/core";
 import ringTone from "../assets/ring_ring.mp3";
 import dialTone from "../assets/dial_tone.mp3";
 
 import { SocketContext } from "../SocketContext";
+import { Call, CallEnd, CallMissed } from "@material-ui/icons";
 
 export default function Notifications() {
-  const { answerCall, call, callAccepted, callOutgoing } = useContext(
-    SocketContext
-  );
+  const {
+    answerCall,
+    declineCall,
+    call,
+    callAccepted,
+    callDeclined,
+    callOutgoing,
+    callEnded,
+  } = useContext(SocketContext);
+
+  const [incomingNotificationOpen, setIncomingNotificationOpen] =
+    useState(false);
+  const [rejectNotificationOpen, setRejectNotificationOpen] = useState(false);
+
+  useEffect(() => {
+    if (call.isReceivingCall && !callAccepted && !callEnded) {
+      setIncomingNotificationOpen(true);
+    } else {
+      setIncomingNotificationOpen(false);
+    }
+  }, [call.isReceivingCall, callAccepted, callEnded]);
+
+  useEffect(() => {
+    if (callDeclined) {
+      setRejectNotificationOpen(true);
+    } else {
+      setRejectNotificationOpen(false);
+    }
+  }, [callDeclined]);
 
   const setVolume = (element, volume) => {
     element.volume = volume;
@@ -28,6 +62,56 @@ export default function Notifications() {
     }
   };
 
+  const incomingNotification = (
+    <Dialog
+      open={incomingNotificationOpen}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">{"Incoming Call"}</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          {call.name} is Calling
+        </DialogContentText>
+        <audio id="ringTone" src={ringTone} autoPlay loop></audio>
+      </DialogContent>
+      <DialogActions>
+        <Button variant="contained" onClick={declineCall} color="secondary">
+          <CallEnd /> Decline
+        </Button>
+        <Button
+          variant="contained"
+          onClick={answerCall}
+          color="primary"
+          autoFocus
+        >
+          <Call /> Answer
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+
+  const rejectNotification = (
+    <Dialog
+      open={rejectNotificationOpen}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">{"Call Rejected"}</DialogTitle>
+      <DialogContent></DialogContent>
+      <DialogActions>
+        <Button
+          variant="contained"
+          onClick={() => window.location.reload()}
+          color="secondary"
+          autoFocus
+        >
+          <CallMissed /> Return
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+
   return (
     <>
       {callOutgoing ? (
@@ -37,17 +121,10 @@ export default function Notifications() {
       ) : (
         <></>
       )}
-      {call.isReceivingCall &&
-        !callAccepted &&
-        setTimeout(() => ringtoneVolumeSetter(), 0) && (
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <h1>{call.name} is Calling</h1>
-            <Button variant="contained" color="primary" onClick={answerCall}>
-              Answer
-            </Button>
-            <audio id="ringTone" src={ringTone} autoPlay loop></audio>
-          </div>
-        )}
+      {incomingNotificationOpen &&
+        setTimeout(() => ringtoneVolumeSetter(), 0) &&
+        incomingNotification}
+      {rejectNotificationOpen && rejectNotification}
     </>
   );
 }
